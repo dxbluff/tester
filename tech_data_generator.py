@@ -194,7 +194,7 @@ def generate_event(time):
 	return event
 
 
-def events_generator(count=1000, begin_date="2020-01-01 00:00:00"):
+def events_generator(count=1000000, begin_date="2020-01-01 00:00:00"):
 	time = datetime.strptime(begin_date, TIME_FORMAT)
 
 	os.makedirs('data', exist_ok=True)
@@ -298,7 +298,7 @@ def generate_signal(time, signal_type)->[]:
 	return signals
 
 
-def signals_generator(count=1000, begin_date="2018-01-01 00:00:00", signal_type="float", interval=30):
+def signals_generator(count=1000000, begin_date="2018-01-01 00:00:00", signal_type="float", interval=30):
 	time = datetime.strptime(begin_date, TIME_FORMAT)
 
 	os.makedirs('data', exist_ok=True)
@@ -315,21 +315,7 @@ def signals_generator(count=1000, begin_date="2018-01-01 00:00:00", signal_type=
 			count -= len(signals)
 
 
-def main():
-# 	print("start")
-# 	events_generator(count=20000000)
-# 	print("1")
-# 	signals_generator(signal_type="float", count=20000000)
-# 	print("2")
-# 	signals_generator(signal_type="int", count=20000000)
-# 	print("3")
-# 	signals_generator(signal_type="bool", count=20000000)
-# 	print("4")
-# 	signals_generator(signal_type="string", count=20000000)
-# 	print("done")
-
-#	signals_generator()
-	
+def main():	
 	events_generator()
 	signals_generator(signal_type="float")
 	signals_generator(signal_type="int")	
