@@ -7,7 +7,7 @@ def main():
     
     print("""
     Choose option:
-        1. Generate datas.
+        1. Generate data.
         2. Create database, tables and enable compression.
         3. Upload datas to TimescaleDB.
         4. Compress datas.
