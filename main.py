@@ -10,7 +10,7 @@ def main():
         1. Generate data.
         2. Create database, tables and enable compression.
         3. Upload datas to TimescaleDB.
-        4. Compress datas.
+        4. Compress tables with uploaded data.
         5. Show results.
     """)
     
