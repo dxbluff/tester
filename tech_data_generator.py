@@ -1,7 +1,7 @@
 import random
 from datetime import datetime, timedelta
 import uuid
-import os
+import os, sys
 
 EVENTS = [
 		('Alarm','Ошибка датчика температуры газа на входе', 'tgi'),
@@ -315,16 +315,16 @@ def signals_generator(count=1000000, begin_date="2018-01-01 00:00:00", signal_ty
 			count -= len(signals)
 
 
-def main():	
-	events_generator()
-	signals_generator(signal_type="float")
-	signals_generator(signal_type="int")	
-	signals_generator(signal_type="bool")	
-	signals_generator(signal_type="string")	
+def main(count):	
+	events_generator(count)
+	signals_generator(signal_type="float", count=count)
+	signals_generator(signal_type="int", count=count)	
+	signals_generator(signal_type="bool", count=count)	
+	signals_generator(signal_type="string", count=count)
 
 
 if __name__ == "__main__":
-	main()
+	main(int(sys.argv[1]))
 
 
 
