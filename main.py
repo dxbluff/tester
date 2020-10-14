@@ -1,10 +1,6 @@
 import os
-
+from tech_data_generator import main as gen_main
 import psycopg2
-
-conn = psycopg2.connect(dbname='tech_data', user='postgres',
-                        password='password', host='localhost')
-cursor = conn.cursor()
 
 
 def print_compress_ratio(records):
@@ -45,8 +41,8 @@ def main():
         answer = input()
         
         if answer == "1":
-            count = input("Input quantity of signals to generate:")
-            os.system(f"python tech_data_generator.py {count}")
+            count = input("Введите количество сигналов для генерации:")
+            gen_main(int(count))
             continue
         elif answer == "2":
             os.system("psql -U postgres < create_db.sql")
@@ -59,14 +55,17 @@ def main():
             os.system("psql -h localhost -U postgres -d tech_data < compress_datas.sql")
             continue
         elif answer == "5":
+            conn = psycopg2.connect(dbname='tech_data', user='postgres',
+                        password='password', host='localhost')
+            cursor = conn.cursor()
             query = 'SELECT hypertable_name, uncompressed_total_bytes, compressed_total_bytes FROM "timescaledb_information"."compressed_hypertable_stats";'
             cursor.execute(query)
             records = cursor.fetchall()
+            cursor.close()
+            conn.close()
             print_compress_ratio(records)
             exit()
         elif answer == "6":
-            cursor.close()
-            conn.close()
             exit()
 
 
