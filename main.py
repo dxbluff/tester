@@ -34,13 +34,13 @@ def main():
     os.system('clear' if os.name == 'nt' else 'cls')
     while True:
         print("""
-            Choose option:
-            1. Generate data.
-            2. Create database, tables and enable compression.
-            3. Upload datas to TimescaleDB.
-            4. Compress tables with uploaded data.
-            5. Show results.
-            6. Exit.
+            Главное меню:
+            1. Генерация данных.
+            2. Создать базу данных, таблицы и включить сжатие таблиц.
+            3. Загрузить данные в TimescaleDB.
+            4. Сжать таблицу с загруженными данными.
+            5. Показать результаты.
+            6. Выход.
         """)
         answer = input()
         
