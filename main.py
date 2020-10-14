@@ -60,7 +60,6 @@ def print_compress_ratio(records):
 
 
 def main():
-    os.system('clear' if os.name == 'nt' else 'cls')
     while True:
         
         menu = """
