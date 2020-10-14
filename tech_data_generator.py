@@ -1,8 +1,10 @@
-import os
 import random
 import sys
 import uuid
 from datetime import datetime, timedelta
+from pathlib import Path
+
+PARENT_DIR = Path(__file__).parent.absolute()
 
 EVENTS = [
     ('Alarm', 'Ошибка датчика температуры газа на входе', 'tgi'),
@@ -152,7 +154,6 @@ SENSORS = [
 
 
 class Event(object):
-    
     def __init__(self, sourcenode, eventid, time, event_type, sourcename, message, ack_transitiontime):
         self.sourcenode = sourcenode  # ПУ 5000, ГРГУ
         self.eventid = eventid
@@ -199,11 +200,9 @@ def generate_event(time):
 def events_generator(count=1000000, begin_date="2020-01-01 00:00:00"):
     time = datetime.strptime(begin_date, TIME_FORMAT)
     
-    os.makedirs('data', exist_ok=True)
-    dir_to_save = os.path.abspath('data')
-    file_path = os.path.join(dir_to_save, 'events_log.csv')
+    (PARENT_DIR / 'data').mkdir(parents=True, exist_ok=True)
     
-    with open(file_path, 'w', encoding='utf8') as logfile:
+    with (PARENT_DIR / 'data' / 'events_log.csv').open(mode='w', encoding='utf-8') as logfile:
         for i in range(count):
             time += timedelta(seconds=random.randint(5, 30))
             event = generate_event(time=time)
@@ -303,11 +302,9 @@ def generate_signal(time, signal_type) -> []:
 def signals_generator(count=1000000, begin_date="2018-01-01 00:00:00", signal_type="float", interval=30):
     time = datetime.strptime(begin_date, TIME_FORMAT)
     
-    os.makedirs('data', exist_ok=True)
-    dir_to_save = os.path.abspath('data')
-    file_path = os.path.join(dir_to_save, signal_type + '_data.csv')
+    (PARENT_DIR / 'data').mkdir(parents=True, exist_ok=True)
     
-    with open(file_path, 'w', encoding='utf8') as logfile:
+    with (PARENT_DIR / 'data' / f'{signal_type}_data.csv').open(mode='w', encoding='utf-8') as logfile:
         while count > 0:
             signals = generate_signal(time, signal_type)
             for signal in signals:

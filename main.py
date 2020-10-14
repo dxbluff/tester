@@ -1,6 +1,39 @@
+import json
 import os
-from tech_data_generator import main as gen_main
+from contextlib import contextmanager
+from pathlib import Path
+
 import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+from tech_data_generator import main as gen_main
+
+PARENT_DIR = Path(__file__).parent.absolute()
+with (PARENT_DIR / 'timescale_config.json').open(mode='r', encoding='utf-8') as fp:
+    CONFIG = json.load(fp)
+
+
+@contextmanager
+def connect(host, user, password, port=5432, database=None):
+    conn = psycopg2.connect(database=database, user=user, password=password, host=host, port=port)
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    
+    cursor = conn.cursor()
+    try:
+        yield cursor
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def execute(credentials, path=None, query=None):
+    if path is not None:
+        with (PARENT_DIR / path).open(mode='r', encoding='utf-8') as fp:
+            query = fp.read()
+    with connect(**credentials) as cursor:
+        cursor.execute(query)
+        if cursor.description is not None:
+            return cursor.fetchall()
 
 
 def print_compress_ratio(records):
@@ -45,24 +78,31 @@ def main():
             gen_main(int(count))
             continue
         elif answer == "2":
-            os.system("psql -U postgres < create_db.sql")
-            os.system("psql -h localhost -U postgres -d tech_data < create_tables.sql")
+            try:
+                execute(dict(CONFIG, database=None), path='create_db.sql')
+            except:
+                pass
+            
+            execute(CONFIG, path='create_tables.sql')
+            
             continue
         elif answer == "3":
-            os.system("upload_datas.bat")
+            with connect(**CONFIG) as cursor:
+                with (PARENT_DIR / 'data' / 'events_log.csv').open(mode='r', encoding='utf-8') as fp:
+                    cursor.copy_from(fp, 'events', sep=',', null='NULL')
+                
+                for table_name in ('bool', 'float', 'int', 'string'):
+                    with (PARENT_DIR / 'data' / f'{table_name}_data.csv').open(mode='r', encoding='utf-8') as fp:
+                        cursor.copy_from(fp, f'{table_name}_values', sep=',')
+            
             continue
         elif answer == "4":
-            os.system("psql -h localhost -U postgres -d tech_data < compress_datas.sql")
+            execute(CONFIG, path='compress_datas.sql')
             continue
         elif answer == "5":
-            conn = psycopg2.connect(dbname='tech_data', user='postgres',
-                        password='password', host='localhost')
-            cursor = conn.cursor()
-            query = 'SELECT hypertable_name, uncompressed_total_bytes, compressed_total_bytes FROM "timescaledb_information"."compressed_hypertable_stats";'
-            cursor.execute(query)
-            records = cursor.fetchall()
-            cursor.close()
-            conn.close()
+            query = 'SELECT hypertable_name, uncompressed_total_bytes, compressed_total_bytes ' \
+                    'FROM "timescaledb_information"."compressed_hypertable_stats";'
+            records = execute(CONFIG, query=query)
             print_compress_ratio(records)
             exit()
         elif answer == "6":
