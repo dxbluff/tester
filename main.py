@@ -39,8 +39,8 @@ def execute(credentials, path=None, query=None):
 def print_compress_ratio(records):
     for record in records:
         print(record[0])
-        print(f"Size before compression: {record[1]}")
-        print(f"Size after compression: {record[2]}")
+        print(f"Размер до сжатия: {record[1]}")
+        print(f"Размер после сжатия: {record[2]}")
         if record[1].split(" ")[1] == "kB":
             origin_size_in_kb = int(record[1].split(" ")[0])
         elif record[1].split(" ")[1] == "MB":
@@ -55,14 +55,15 @@ def print_compress_ratio(records):
         elif record[2].split(" ")[1] == "GB":
             compressed_size_in_kb = int(record[2].split(" ")[0]) * 1024 * 1024
         
-        print(f"Compression ratio: {origin_size_in_kb / compressed_size_in_kb}")
+        print(f"Коэффициент сжатия: {origin_size_in_kb / compressed_size_in_kb}")
         print()
 
 
 def main():
-    os.system('clear' if os.name == 'nt' else 'cls')
     while True:
-        print("""
+        os.system('clear' if os.name == 'nt' else 'cls')
+
+        menu = """
             Главное меню:
             1. Генерация данных.
             2. Создать базу данных, таблицы и включить сжатие таблиц.
@@ -70,7 +71,10 @@ def main():
             4. Сжать таблицу с загруженными данными.
             5. Показать результаты.
             6. Выход.
-        """)
+        """
+        
+        print(menu)
+
         answer = input()
         
         if answer == "1":
