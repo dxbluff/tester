@@ -63,6 +63,7 @@ def main():
     while True:
         
         menu = """
+            TimescaleDB compression ratio tester
             Главное меню:
             1. Генерация данных.
             2. Создать базу данных, таблицы и включить сжатие таблиц.
