@@ -1,8 +1,8 @@
 import os
-import subprocess
 
 import psycopg2
-conn = psycopg2.connect(dbname='tech_data', user='postgres', 
+
+conn = psycopg2.connect(dbname='tech_data', user='postgres',
                         password='password', host='localhost')
 cursor = conn.cursor()
 
@@ -15,23 +15,24 @@ def print_compress_ratio(records):
         if record[1].split(" ")[1] == "kB":
             origin_size_in_kb = int(record[1].split(" ")[0])
         elif record[1].split(" ")[1] == "MB":
-            origin_size_in_kb = int(record[1].split(" ")[0])*1024
+            origin_size_in_kb = int(record[1].split(" ")[0]) * 1024
         elif record[1].split(" ")[1] == "GB":
-            origin_size_in_kb = int(record[1].split(" ")[0])*1024*1024 
-
+            origin_size_in_kb = int(record[1].split(" ")[0]) * 1024 * 1024
+        
         if record[2].split(" ")[1] == "kB":
             compressed_size_in_kb = int(record[2].split(" ")[0])
         elif record[2].split(" ")[1] == "MB":
-            compressed_size_in_kb = int(record[2].split(" ")[0])*1024
+            compressed_size_in_kb = int(record[2].split(" ")[0]) * 1024
         elif record[2].split(" ")[1] == "GB":
-            compressed_size_in_kb = int(record[2].split(" ")[0])*1024*1024
-
-        print(f"Compression ratio: {origin_size_in_kb/compressed_size_in_kb}")
+            compressed_size_in_kb = int(record[2].split(" ")[0]) * 1024 * 1024
+        
+        print(f"Compression ratio: {origin_size_in_kb / compressed_size_in_kb}")
         print()
 
+
 def main():
-    
-    while(True):
+    os.system('clear' if os.name == 'nt' else 'cls')
+    while True:
         print("""
             Choose option:
             1. Generate data.
@@ -42,12 +43,12 @@ def main():
             6. Exit.
         """)
         answer = input()
-
+        
         if answer == "1":
-            count = input("Input quantity of signals to generate:")        
+            count = input("Input quantity of signals to generate:")
             os.system(f"python tech_data_generator.py {count}")
             continue
-        elif answer== "2":
+        elif answer == "2":
             os.system("psql -U postgres < create_db.sql")
             os.system("psql -h localhost -U postgres -d tech_data < create_tables.sql")
             continue
@@ -69,6 +70,5 @@ def main():
             exit()
 
 
-
 if __name__ == "__main__":
-	main()
+    main()
