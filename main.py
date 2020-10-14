@@ -60,9 +60,9 @@ def print_compress_ratio(records):
 
 
 def main():
+    os.system('clear' if os.name == 'nt' else 'cls')
     while True:
-        os.system('clear' if os.name == 'nt' else 'cls')
-
+        
         menu = """
             Главное меню:
             1. Генерация данных.
@@ -74,7 +74,7 @@ def main():
         """
         
         print(menu)
-
+        
         answer = input()
         
         if answer == "1":
